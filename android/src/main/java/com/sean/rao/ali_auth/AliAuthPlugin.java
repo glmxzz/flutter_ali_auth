@@ -207,15 +207,17 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
   @Override
   public void onListen(Object o, EventChannel.EventSink eventSink) {
     Log.d(TAG, "listen 初始化完毕！");
+    _events = null;
     String version = PhoneNumberAuthHelper.getVersion();
     eventSink.success(UtilTool.resultFormatData("500004", String.format("插件启动监听成功, 当前SDK版本: %s", version), ""));
-    if( _events == null ){
+//    if( _events == null ){
       _events = eventSink;
-    }
+//    }
   }
 
   @Override
   public void onCancel(Object o) {
+    Log.d(TAG, "listen onCancel！");
     if( _events != null){
       _events = null;
     }
