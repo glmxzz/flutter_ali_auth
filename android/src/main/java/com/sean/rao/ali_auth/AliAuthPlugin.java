@@ -223,6 +223,7 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+    Log.d(TAG, "listen onDetachedFromEngine！");
     channel.setMethodCallHandler(null);
   }
 
@@ -230,6 +231,7 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
   public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
     mActivity = binding.getActivity();
     mContext = mActivity.getBaseContext();
+    Log.d(TAG, "listen onAttachedToActivity！");
   }
 
   @Override
@@ -244,6 +246,7 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
 
   @Override
   public void onDetachedFromActivity() {
+    Log.d(TAG, "listen onDetachedFromActivity！");
     if( _events != null){
       _events.endOfStream();
     }
