@@ -208,9 +208,9 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
     Log.d(TAG, "listen 初始化完毕！");
     String version = PhoneNumberAuthHelper.getVersion();
     eventSink.success(UtilTool.resultFormatData("500004", String.format("插件启动监听成功, 当前SDK版本: %s", version), ""));
-    if( _events == null ){
+//    if( _events == null ){
       _events = eventSink;
-    }
+//    }
   }
 
   @Override
