@@ -48,14 +48,14 @@ bool bool_false = false;
 
 #pragma mark - IOS 主动发送通知让 flutter调用监听 eventChannel start
 - (FlutterError*)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
-  if (_eventSink == nil) {
+//  if (_eventSink == nil) {
     _eventSink = eventSink;
     /** 返回初始化状态 */
     NSString *version = [[TXCommonHandler sharedInstance] getVersion];
     
     NSDictionary *dict = @{ @"resultCode": @"500004", @"msg": version };
     [self showResultMsg: dict msg:version];
-  }
+//  }
   return nil;
 }
 
