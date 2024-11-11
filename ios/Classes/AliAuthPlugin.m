@@ -407,7 +407,7 @@ bool bool_false = false;
   }
   // 设置上下的位置
   hud.offset = CGPointMake(0.f, offSetY);
-  [hud hideAnimated:YES afterDelay: [dic floatValueForKey: @"toastDelay" defaultValue: 3]];
+  [hud hideAnimated:YES afterDelay: [dic floatValueForKey: @"toastDelay" defaultValue: 1.5]];
 }
 
 -(void) resultData:(NSDictionary *)dict{
