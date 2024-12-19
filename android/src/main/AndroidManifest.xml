@@ -17,23 +17,18 @@
     <application
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <!--联通电信授权页-->
         <activity
-            android:name="io.flutter.embedding.android.FlutterActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize"
-            android:usesCleartextTraffic="true"/>
-
-        <!--二次弹窗-->
-        <activity
-            android:name="com.mobile.auth.gatewayauth.PrivacyDialogActivity"
+            android:name="com.mobile.auth.gatewayauth.LoginAuthActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            tools:replace="android:configChanges"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <!--协议页面webview-->
+        <activity
+            android:name="com.mobile.auth.gatewayauth.activity.AuthWebVeiwActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="behind"
-            android:theme="@style/authsdk_activity_dialog"/>
-
+            android:screenOrientation="behind" />
     </application>
 </manifest>
