@@ -34,8 +34,8 @@ public class OneKeyLoginPublic extends LoginParams {
         mActivity = activity;
         mContext = activity.getBaseContext();
         eventSink = _eventSink;
-        jsonObject = formatParmas(arguments);
-        config = getFormatConfig(jsonObject);
+//        jsonObject = formatParmas(arguments);
+//        config = getFormatConfig(jsonObject);
 
         // 初始化SDK
         sdkInit();
