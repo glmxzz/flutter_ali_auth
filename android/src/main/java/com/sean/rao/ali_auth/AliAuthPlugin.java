@@ -38,6 +38,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import util.OneKeyLoginManager;
 
 import com.sean.rao.ali_auth.auth.TestActivity;
 import com.sean.rao.ali_auth.common.LoginParams;
@@ -155,7 +156,11 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
 //          boolean isDelay = jsonObject.getBoolean("isDelay");
 //          /// 判断是否初始化过或者是否是同步登录，如果是将进行再次初始化
 //          if (oneKeyLoginPublic == null || !isDelay) {
-            oneKeyLoginPublic = new OneKeyLoginPublic(mActivity, _events, call.arguments);
+            OneKeyLoginManager oneKeyLoginManager =new OneKeyLoginManager(mContext);
+        oneKeyLoginManager.initSdk("rrpky/r8QtcrKmI/9KN1NU/wzr+Gz2Tdb6RXViG3CtsJ5sR4U4exSulQFoJSUkEDC1g7shtLCYhHS2i+psGS+y7x07u1aPE7BstcdcmdirkA7kcSwU0tC88r6FZMrxUPJx6VSxvDOmwxMBlTWeuQHaswj41VpreJdJo4SNrazdvU08nxoBCw4w5PvvkM8OtSH92yWKu9o6JuUHohObSfvMS/YoUDVdrvXBjimD08oXuyaqSfiUibVfHlrQr/WB6TAyQZyU+7Q72y+NuIytAWh8CWfXLjC0k9kGwg5O16uLm1U8CY0D3erg==", false);
+        oneKeyLoginManager.initLayout();
+        oneKeyLoginManager.oneKeyLogin();
+//            oneKeyLoginPublic = new OneKeyLoginPublic(mActivity, _events, call.arguments);
 //          }
 //        }
         break;
