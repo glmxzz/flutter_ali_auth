@@ -39,13 +39,13 @@ public class OneKeyLoginPublic extends LoginParams {
 
         // 初始化SDK
         sdkInit();
-        mUIConfig = BaseUIConfig.init(jsonObject.getIntValue("pageType"));
-        if (jsonObject.getBooleanValue("isDelay")) {
-        } else {
-            // 非延时的情况下需要判断是否给予登录
-            mAuthHelper.quitLoginPage();
+//        mUIConfig = BaseUIConfig.init(jsonObject.getIntValue("pageType"));
+//        if (jsonObject.getBooleanValue("isDelay")) {
+//        } else {
+//            // 非延时的情况下需要判断是否给予登录
+//            mAuthHelper.quitLoginPage();
             oneKeyLogin();
-        }
+//        }
     }
 
     /**
