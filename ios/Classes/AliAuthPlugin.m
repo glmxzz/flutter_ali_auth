@@ -117,9 +117,6 @@ bool bool_false = false;
   else if ([@"checkEnvAvailable" isEqualToString:call.method]) {
     [self checkVerifyEnable:call result:result];
   }
-  else if ([@"checkCellularDataEnable" isEqualToString:call.method]) {
-    [self checkCellularDataEnable:call result:result];
-  }
   else  if ([@"preLogin" isEqualToString:call.method]) {
     [self getPreLogin:call result:result];
   }
@@ -128,18 +125,6 @@ bool bool_false = false;
   }
   else if ([@"appleLogin" isEqualToString:call.method]) {
     [self handleAuthorizationAppleIDButtonPress:call result:result];
-  }
-  else if ([@"openPage" isEqualToString:call.method]) {
-    // 1.初始化flutter控制器，并指定路由 “home”，flutter中根据该路由标识显示对应的界面
-    FlutterViewController* flutterViewController = [
-      [FlutterViewController alloc] initWithProject:nil
-      initialRoute:[call.arguments stringValueForKey: @"pageRoute" defaultValue: @"/"]
-      nibName:nil
-      bundle:nil
-    ];
-    // 2. 跳转
-    flutterViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-    [[self findCurrentViewController] presentViewController:flutterViewController animated: YES completion:nil];
   }
   else {
     result(FlutterMethodNotImplemented);

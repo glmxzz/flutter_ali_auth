@@ -3,6 +3,7 @@ package com.sean.rao.ali_auth;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -38,6 +39,7 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+import com.sean.rao.ali_auth.auth.TestActivity;
 import com.sean.rao.ali_auth.common.LoginParams;
 import com.sean.rao.ali_auth.login.OneKeyLoginPublic;
 import com.sean.rao.ali_auth.utils.UtilTool;
@@ -52,16 +54,10 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
-
-  private FlutterEngine flutterEngine;
-
-
   public static EventChannel.EventSink _events;
 
   private static final String METHOD_CHANNEL = "ali_auth";
   private static final String EVENT_CHANNEL = "ali_auth/event";
-
-  private ConnectivityManager.NetworkCallback callback;
 
   /**
    * 延时登录
@@ -110,58 +106,61 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
         result.success(carrierName);
         break;
       case "initSdk":
-        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(call.arguments));
-        if (!jsonObject.getBooleanValue("isHideToast")) {
-          Toaster.init(mActivity.getApplication(), new ToastStrategy(){
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public IToast createToast(IToastStyle<?> style) {
-              IToast toast = super.createToast(style);
-              CustomToast customToast = ((CustomToast) toast);
-              // 设置 Toast 动画效果
-              //customToast.setAnimationsId(R.anim.xxx);
-              // 设置短 Toast 的显示时长（默认是 2000 毫秒）
-              customToast.setShortDuration(jsonObject.getIntValue("toastDelay") * 1000);
-              if (UtilTool.dataStatus(jsonObject, "toastPositionMode")) {
-                String mode = jsonObject.getString("toastPositionMode");
-                switch (mode){
-                  case "top":
-                    customToast.setGravity(Gravity.TOP, 0, jsonObject.getIntValue("marginTop") + 10);
-                    break;
-                  case "bottom":
-                    customToast.setGravity(Gravity.BOTTOM, 0, jsonObject.getIntValue("marginBottom") + 10);
-                    break;
-                  default:
-                    customToast.setGravity(Gravity.CENTER, 0, 0);
-                    break;
-                }
-              }
-              View view = customToast.getView();
-              // 设置背景颜色
-              view.setBackgroundColor(Color.parseColor(jsonObject.getString("toastBackground")));
-              // 设置内边剧
-              view.setPadding(
-                      jsonObject.getIntValue("toastPadding"),
-                      jsonObject.getIntValue("toastPadding"),
-                      jsonObject.getIntValue("toastPadding"),
-                      jsonObject.getIntValue("toastPadding")
-              );
-              // 重置view样式
-              customToast.setView(view);
-              return toast;
-            }
-          });
-        }
+//        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(call.arguments));
+//        if (!jsonObject.getBooleanValue("isHideToast")) {
+//          Toaster.init(mActivity.getApplication(), new ToastStrategy(){
+//            @RequiresApi(api = Build.VERSION_CODES.N)
+//            @Override
+//            public IToast createToast(IToastStyle<?> style) {
+//              IToast toast = super.createToast(style);
+//              CustomToast customToast = ((CustomToast) toast);
+//              // 设置 Toast 动画效果
+//              //customToast.setAnimationsId(R.anim.xxx);
+//              // 设置短 Toast 的显示时长（默认是 2000 毫秒）
+//              customToast.setShortDuration(jsonObject.getIntValue("toastDelay") * 1000);
+//              if (UtilTool.dataStatus(jsonObject, "toastPositionMode")) {
+//                String mode = jsonObject.getString("toastPositionMode");
+//                switch (mode){
+//                  case "top":
+//                    customToast.setGravity(Gravity.TOP, 0, jsonObject.getIntValue("marginTop") + 10);
+//                    break;
+//                  case "bottom":
+//                    customToast.setGravity(Gravity.BOTTOM, 0, jsonObject.getIntValue("marginBottom") + 10);
+//                    break;
+//                  default:
+//                    customToast.setGravity(Gravity.CENTER, 0, 0);
+//                    break;
+//                }
+//              }
+//              View view = customToast.getView();
+//              // 设置背景颜色
+//              view.setBackgroundColor(Color.parseColor(jsonObject.getString("toastBackground")));
+//              // 设置内边剧
+//              view.setPadding(
+//                      jsonObject.getIntValue("toastPadding"),
+//                      jsonObject.getIntValue("toastPadding"),
+//                      jsonObject.getIntValue("toastPadding"),
+//                      jsonObject.getIntValue("toastPadding")
+//              );
+//              // 重置view样式
+//              customToast.setView(view);
+//              return toast;
+//            }
+//          });
+//        }
+//
+//        if (_events == null) {
+//          result.error("500001", "请先对插件进行监听！", null);
+//        } else {
+//          boolean isDelay = jsonObject.getBoolean("isDelay");
+//          /// 判断是否初始化过或者是否是同步登录，如果是将进行再次初始化
+//          if (oneKeyLoginPublic == null || !isDelay) {
+//            oneKeyLoginPublic = new OneKeyLoginPublic(mActivity, _events, call.arguments);
+//          }
+//        }
 
-        if (_events == null) {
-          result.error("500001", "请先对插件进行监听！", null);
-        } else {
-          boolean isDelay = jsonObject.getBoolean("isDelay");
-          /// 判断是否初始化过或者是否是同步登录，如果是将进行再次初始化
-          if (oneKeyLoginPublic == null || !isDelay) {
-            oneKeyLoginPublic = new OneKeyLoginPublic(mActivity, _events, call.arguments);
-          }
-        }
+        Intent intent = new Intent(this, TestActivity.class);
+        mActivity.startActivity(intent);
         break;
       case "login":
         if (oneKeyLoginPublic != null) {
