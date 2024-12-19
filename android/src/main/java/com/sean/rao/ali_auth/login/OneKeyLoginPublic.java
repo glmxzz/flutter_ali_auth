@@ -97,13 +97,13 @@ public class OneKeyLoginPublic extends LoginParams {
             }
         };
         mAuthHelper=PhoneNumberAuthHelper.getInstance(mContext, mTokenResultListener);
-        mAuthHelper.getReporter().setLoggerEnable(jsonObject.getBooleanValue("isDebug"));
-        mAuthHelper.setAuthSDKInfo(jsonObject.getString("androidSk"));
+//        mAuthHelper.getReporter().setLoggerEnable(jsonObject.getBooleanValue("isDebug"));
+        mAuthHelper.setAuthSDKInfo("rrpky/r8QtcrKmI/9KN1NU/wzr+Gz2Tdb6RXViG3CtsJ5sR4U4exSulQFoJSUkEDC1g7shtLCYhHS2i+psGS+y7x07u1aPE7BstcdcmdirkA7kcSwU0tC88r6FZMrxUPJx6VSxvDOmwxMBlTWeuQHaswj41VpreJdJo4SNrazdvU08nxoBCw4w5PvvkM8OtSH92yWKu9o6JuUHohObSfvMS/YoUDVdrvXBjimD08oXuyaqSfiUibVfHlrQr/WB6TAyQZyU+7Q72y+NuIytAWh8CWfXLjC0k9kGwg5O16uLm1U8CY0D3erg==");
 
         /// 延时的情况下进行预取号，加快拉取授权页面
-        if (jsonObject.getBooleanValue("isDelay")) {
+//        if (jsonObject.getBooleanValue("isDelay")) {
             mAuthHelper.checkEnvAvailable(PhoneNumberAuthHelper.SERVICE_TYPE_LOGIN);
-        }
+//        }
     }
 
     /**
