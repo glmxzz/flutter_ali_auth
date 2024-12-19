@@ -133,8 +133,8 @@ public class OneKeyLoginPublic extends LoginParams {
      */
     private void oneKeyLogin() {
         mAuthHelper = PhoneNumberAuthHelper.getInstance(mActivity.getApplicationContext(), mTokenResultListener);
-        mAuthHelper.checkEnvAvailable(2);
-        mUIConfig.configAuthPage();
+//        mAuthHelper.checkEnvAvailable(2);
+//        mUIConfig.configAuthPage();
         mAuthHelper.getLoginToken(mContext, 5000);
     }
 
