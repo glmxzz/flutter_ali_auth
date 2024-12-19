@@ -159,7 +159,7 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Act
 //          }
 //        }
 
-        Intent intent = new Intent(this, TestActivity.class);
+        Intent intent = new Intent(mActivity, TestActivity.class);
         mActivity.startActivity(intent);
         break;
       case "login":
