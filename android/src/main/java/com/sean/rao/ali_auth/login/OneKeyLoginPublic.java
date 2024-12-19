@@ -102,7 +102,7 @@ public class OneKeyLoginPublic extends LoginParams {
 
         /// 延时的情况下进行预取号，加快拉取授权页面
 //        if (jsonObject.getBooleanValue("isDelay")) {
-            mAuthHelper.checkEnvAvailable(PhoneNumberAuthHelper.SERVICE_TYPE_LOGIN);
+//            mAuthHelper.checkEnvAvailable(PhoneNumberAuthHelper.SERVICE_TYPE_LOGIN);
 //        }
     }
 
