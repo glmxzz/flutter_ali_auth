@@ -26,7 +26,7 @@ public class DialogPortConfig extends BaseUIConfig {
 
     public DialogPortConfig() {
         super();
-        mPackageName = AppUtils.getPackageName(mActivity);
+//        mPackageName = AppUtils.getPackageName(mActivity);
     }
 
     @Override
