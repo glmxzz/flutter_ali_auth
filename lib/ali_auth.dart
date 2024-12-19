@@ -46,15 +46,6 @@ class AliAuth {
     return AliAuthPlatform.instance.getCurrentCarrierName();
   }
 
-  /// pageRoute
-  static Future<void> openPage(String? pageRoute) async {
-    return AliAuthPlatform.instance.openPage(pageRoute);
-  }
-
-  static Future<dynamic> get checkCellularDataEnable async {
-    return AliAuthPlatform.instance.checkCellularDataEnable;
-  }
-
   /// 苹果登录iOS专用
   static Future<dynamic> get appleLogin async {
     return AliAuthPlatform.instance.appleLogin;
