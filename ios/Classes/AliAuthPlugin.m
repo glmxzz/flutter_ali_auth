@@ -146,6 +146,14 @@ bool bool_false = false;
   }
 }
 
+- (TXCustomModel *)initModel() {
+    TXCustomModel *model = [[TXCustomModel alloc] init];
+    model.navColor = UIColor.orangeColor;
+    model.navTitle = [[NSAttributedString alloc] initWithString:@"一键登录（全屏）" attributes:@{NSForegroundColorAttributeName : UIColor.whiteColor,NSFontAttributeName : [UIFont systemFontOfSize:20.0]}];
+    return model;
+}
+
+
 #pragma mark - 初始化SDK以及相关布局
 - (void)initSdk {
   NSDictionary *dic = _callData.arguments;
@@ -157,29 +165,30 @@ bool bool_false = false;
   else {
     NSString *secret = [dic stringValueForKey: @"iosSk" defaultValue: @""];
     /** 不管是否延时登录都需要，先初始化model */
-    _model = [PNSBuildModelUtils buildModelWithStyle: dic target:self selector:@selector(btnClick:)];
+    _model = [self initModel];
     //1. 初始化sdk，设置secret
     [[TXCommonHandler sharedInstance] setAuthSDKInfo:secret complete:^(NSDictionary * _Nonnull resultDic) {
+
       //2. 调用check接口检查及准备接口调用环境
-      [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable checkDic) {
-        if ([PNSCodeSuccess isEqualToString:[checkDic objectForKey:@"resultCode"]] == YES) {
-          //3. 调用取号接口，加速授权页的弹起
-          [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout: 5.0 complete:^(NSDictionary * _Nonnull resultDic) {
-            //4. 预取号成功后判断是否延时登录，否则立即登录
-            if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == YES) {
-              if (![dic boolValueForKey: @"isDelay" defaultValue: NO]) {
-                [self loginWithModel: self->_model complete:^{}];
-              }
-            }else{
-                [self showResult: resultDic];
-            }
-          }];
-        } else {
-          NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:checkDic];
-          [result setValue:@(bool_false) forKey: @"token"];
-          [self showResult: result];
-        }
-      }];
+//       [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable checkDic) {
+//         if ([PNSCodeSuccess isEqualToString:[checkDic objectForKey:@"resultCode"]] == YES) {
+//           //3. 调用取号接口，加速授权页的弹起
+//           [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout: 5.0 complete:^(NSDictionary * _Nonnull resultDic) {
+//             //4. 预取号成功后判断是否延时登录，否则立即登录
+//             if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == YES) {
+//               if (![dic boolValueForKey: @"isDelay" defaultValue: NO]) {
+//                 [self loginWithModel: self->_model complete:^{}];
+//               }
+//             }else{
+//                 [self showResult: resultDic];
+//             }
+//           }];
+//         } else {
+//           NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:checkDic];
+//           [result setValue:@(bool_false) forKey: @"token"];
+//           [self showResult: result];
+//         }
+//       }];
     }];
   }
 }
