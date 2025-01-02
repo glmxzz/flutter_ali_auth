@@ -181,7 +181,7 @@ bool bool_false = false;
         };
 
 
-    UIImage *defaultClick = [UIImage imageNamed:@"button_click"];
+//     UIImage *defaultClick = [UIImage imageNamed:@"button_click"];
 
 
 
