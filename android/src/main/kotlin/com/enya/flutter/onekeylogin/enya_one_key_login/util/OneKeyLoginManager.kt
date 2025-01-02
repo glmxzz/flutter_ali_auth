@@ -167,20 +167,28 @@ class OneKeyLoginManager(private val context: Context) {
         mPhoneNumberAuthHelper!!.setAuthUIConfig(
             authUiConfig ?: AuthUIConfig.Builder()
                 .setScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT)
-                .setSloganHidden(true) //中国移动的标志隐藏
+
                 .setSwitchAccHidden(true) //切换方式隐藏
                 .setPrivacyState(false) //隐私条款是否默认勾选
                 .setLightColor(false) //状态栏字体颜色
                 .setNavHidden(true)
                 .setStatusBarColor(Color.TRANSPARENT)
                 .setStatusBarUIFlag(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-                .setLogoImgPath("icon_login_logo")
-                .setLogoWidth(75)
-                .setLogoHeight(75)
-                .setLogoOffsetY(140)
+
+                //logo
+                .setLogoHidden(true)
+
+                .setSloganText("本机号登录")
+                .setSloganTextSizeDp(24)
+                .setSloganHidden(false)
+                .setSloganTextColor(Color.WHITE)
+
+                //手机号码
                 .setNumberColor(Color.WHITE)
-                .setNumberSizeDp(19)
+                .setNumberSizeDp(24)
                 .setNumFieldOffsetY(254)
+
+                //一键登录按钮
                 .setLogBtnOffsetY(301)
                 .setLogBtnText("一键登录")
                 .setLogBtnTextColor(context.resources.getColor(R.color.color_363C54))
@@ -189,6 +197,9 @@ class OneKeyLoginManager(private val context: Context) {
                 .setLogBtnHeight(48)
                 .setLogBtnMarginLeftAndRight(54)
                 .setLogBtnToastHidden(true)
+
+
+
                 .setPrivacyTextSize(11)
                 .setPrivacyBefore("我已阅读并同意")
                 .setAppPrivacyOne("《用户服务条款》", "baidu")
