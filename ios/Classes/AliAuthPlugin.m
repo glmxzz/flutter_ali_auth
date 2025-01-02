@@ -162,7 +162,7 @@ bool bool_false = false;
 
     //手机号码
     model.numberColor = UIColor.whiteColor;
-    model.numberFont = [UIFont systemFontOfSize:22.0]
+    model.numberFont = [UIFont systemFontOfSize:22.0];
     model.numberFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
       frame.origin.y = 254;
       return frame;
