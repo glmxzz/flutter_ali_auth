@@ -148,8 +148,60 @@ bool bool_false = false;
 
 - (TXCustomModel *)buildModel{
     TXCustomModel *model = [[TXCustomModel alloc] init];
+    model.supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
+    model.changeBtnIsHidden = YES ;
+
     model.navColor = UIColor.orangeColor;
-    model.navTitle = [[NSAttributedString alloc] initWithString:@"一键登录（全屏）" attributes:@{NSForegroundColorAttributeName : UIColor.whiteColor,NSFontAttributeName : [UIFont systemFontOfSize:20.0]}];
+    model.navIsHidden = YES ;
+    model.prefersStatusBarHidden = YES ;
+
+
+    model.logoIsHidden = YES ;
+
+    model.sloganText = [[NSAttributedString alloc] initWithString:@"本机号登录" attributes:@{NSForegroundColorAttributeName : UIColor.whiteColor,NSFontAttributeName : [UIFont systemFontOfSize:22.0]}];
+
+    //手机号码
+    model.numberColor = UIColor.whiteColor;
+    model.numberFont = [UIFont systemFontOfSize:22.0]
+    model.numberFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+      frame.origin.y = 254;
+      return frame;
+    };
+
+    //登录按钮
+    model.loginBtnText = [[NSAttributedString alloc] initWithString:@"一键登录" attributes:@{
+        NSForegroundColorAttributeName: [self getColor: @"#363C54"],
+        NSFontAttributeName : [UIFont systemFontOfSize:17.0]
+    }];
+
+    model.loginBtnFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+          frame.size.height = 56;
+          frame.origin.y = 321;
+          return frame;
+        };
+
+
+    model.autoHideLoginLoading = YES ;
+
+
+    //协议
+    model.checkBoxWH = 16;
+    model.privacyFont = [UIFont systemFontOfSize:12.0];
+    model.privacyPreText = @"我已阅读并同意";
+    model.privacyOne = @[@"《用户服务条款》", @"https://www.taobao.com"];
+    model.privacyTwo = @[@"《隐私保护指引》", @"https://www.taobao.com"];
+    model.privacyColors = @[
+          [self getColor: @"#F4F5F7"],
+          [self getColor: @"#363C54"]
+        ];
+
+    model.privacyFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+          frame.origin.y = screenSize.height - frame.size.height - 40;
+          return frame;
+        };
+
+    model.privacyOperatorPreText = @"《";
+    model.privacyOperatorSufText = @"》";
     return model;
 }
 
