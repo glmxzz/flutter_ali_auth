@@ -148,6 +148,8 @@ bool bool_false = false;
 
 - (TXCustomModel *)buildModel{
     TXCustomModel *model = [[TXCustomModel alloc] init];
+
+    model.backgroundColor = [PNSBuildModelUtils getColor: @"#222220"];
     model.supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
     model.changeBtnIsHidden = YES ;
 
@@ -206,9 +208,43 @@ bool bool_false = false;
 
     model.privacyOperatorPreText = @"《";
     model.privacyOperatorSufText = @"》";
+
+
+
+    //添加自定义控件并对自定义控件进行布局
+    //添加微信
+    __block UIButton *customBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [customBtn setBackgroundColor:[UIColor clearColor]];
+    customBtn.frame = CGRectMake(0, 0, 230, 40);
+
+    // 添加点击事件处理逻辑
+    [customBtn addTarget:self action:@selector(wxBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
+
+    //添加图片
+    UIImage *normalBackgroundImage = [UIImage imageNamed:@"icon_login_wechat"];
+    // 为按钮正常状态设置背景图片
+    [customBtn setBackgroundImage:normalBackgroundImage forState:UIControlStateNormal];
+    // 为按钮按下（高亮）状态设置背景图片
+    [customBtn setBackgroundImage:normalBackgroundImage forState:UIControlStateHighlighted];
+
+    model.customViewBlock = ^(UIView * _Nonnull superCustomView) {
+        [superCustomView addSubview:customBtn];
+    };
+    model.customViewLayoutBlock = ^(CGSize screenSize, CGRect contentViewFrame, CGRect navFrame, CGRect titleBarFrame, CGRect logoFrame, CGRect sloganFrame, CGRect numberFrame, CGRect loginFrame, CGRect changeBtnFrame, CGRect privacyFrame) {
+        CGRect frame = customBtn.frame;
+        frame.origin.y = screenSize.height - frame.size.height - 80;
+        customBtn.frame = frame;
+    };
+
     return model;
 }
 
+
+// 在当前类中实现点击事件对应的方法（这里假设是在视图控制器类中，你可以根据实际情况调整）
+- (void)wxBtnClicked:(UIButton *)sender {
+    NSLog(@"自定义按钮被点击了");
+    // 在这里添加点击按钮后具体要执行的业务逻辑，比如跳转到其他页面、执行某个操作等
+}
 
 #pragma mark - 初始化SDK以及相关布局
 - (void)initSdk {
