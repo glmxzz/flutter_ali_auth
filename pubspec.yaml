@@ -35,8 +35,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.sean.rao.ali_auth
-        pluginClass: AliAuthPlugin
+        package: com.enya.flutter.onekeylogin.enya_one_key_login
+        pluginClass: EnyaOneKeyLoginPlugin
       ios:
         pluginClass: AliAuthPlugin
       web:
