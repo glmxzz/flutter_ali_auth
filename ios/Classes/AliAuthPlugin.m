@@ -170,7 +170,7 @@ bool bool_false = false;
 
     //登录按钮
     model.loginBtnText = [[NSAttributedString alloc] initWithString:@"一键登录" attributes:@{
-        NSForegroundColorAttributeName: [self getColor: @"#363C54"],
+        NSForegroundColorAttributeName: [PNSBuildModelUtils getColor: @"#363C54"],
         NSFontAttributeName : [UIFont systemFontOfSize:17.0]
     }];
 
@@ -179,6 +179,10 @@ bool bool_false = false;
           frame.origin.y = 321;
           return frame;
         };
+
+
+    UIImage *defaultClick = [UIImage imageNamed:@"button_click"];
+
 
 
     model.autoHideLoginLoading = YES ;
@@ -191,8 +195,8 @@ bool bool_false = false;
     model.privacyOne = @[@"《用户服务条款》", @"https://www.taobao.com"];
     model.privacyTwo = @[@"《隐私保护指引》", @"https://www.taobao.com"];
     model.privacyColors = @[
-          [self getColor: @"#F4F5F7"],
-          [self getColor: @"#363C54"]
+          [PNSBuildModelUtils getColor: @"#F4F5F7"],
+          [PNSBuildModelUtils getColor: @"#363C54"]
         ];
 
     model.privacyFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
@@ -371,26 +375,53 @@ bool bool_false = false;
   // 每次登录时都设置没有登录状态
   self->_isChecked = false;
   
-  //1. 调用check接口检查及准备接口调用环境
-  [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable resultDic) {
-        if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == NO) {
-          [weakSelf showResult:resultDic];
-          return;
-        }
-        
-        //2. 调用取号接口，加速授权页的弹起
-        [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout:timeout complete:^(NSDictionary * _Nonnull resultDic) {
-          if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == NO) {
-            [weakSelf showResult:resultDic];
-            return;
-          }
-          
-            //3. 调用获取登录Token接口，可以立马弹起授权页
-            // 关闭loading
-            [MBProgressHUD hideHUDForView:_vc.view animated:YES];
+  //直接登录
+  [[TXCommonHandler sharedInstance] getLoginTokenWithTimeout:timeout controller:_vc model:model complete:^(NSDictionary * _Nonnull resultDic) {
+              NSString *code = [resultDic objectForKey:@"resultCode"];
+//              UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickAllScreen:)];
+//
+//              UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _vc.view.bounds.size.width, _vc.view.bounds.size.height)];
+              //将手势添加到需要相应的view中去
+              [[weakSelf findCurrentViewController].view hitTest:CGPointMake(_vc.view.bounds.size.width, _vc.view.bounds.size.height) withEvent:nil];
+//              [[weakSelf findCurrentViewController].view addSubview:headerView];
 
-        }];
-    }];
+              bool isHiddenLoading = [self->_callData.arguments boolValueForKey: @"isHiddenLoading" defaultValue: YES];
+              // 当未勾选隐私协议时，弹出 Toast 提示
+              if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] &&
+                    !self->_isChecked) {
+                    NSDictionary *dic = self->_callData.arguments;
+                    [self showToast:[dic stringValueForKey:@"toastText" defaultValue:@"请先阅读用户协议"]];
+                    // 当存在isHiddenLoading时需要执行loading
+              } else if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] && !isHiddenLoading) {
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD showHUDAddedTo:[weakSelf findCurrentViewController].view animated:YES];
+                });
+              } else if ([PNSCodeSuccess isEqualToString:code]) {
+                bool autoQuitPage = [self->_callData.arguments boolValueForKey: @"autoQuitPage" defaultValue: YES];
+                // 登录成功后是否自动关闭页面
+                if (autoQuitPage) {
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                    [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+                  });
+                }
+              } else if ([PNSCodeLoginControllerClickChangeBtn isEqualToString:code]) {
+                // 通过switchCheck 参数动态控制 是否需要切换其他方式时需要勾选
+                NSDictionary *dic = self -> _callData.arguments;
+                if (!self->_isChecked && !self-> _isHideToast && [dic boolValueForKey: @"switchCheck" defaultValue: YES]) {
+                  [self showToast: [dic stringValueForKey: @"toastText" defaultValue: @"请先阅读用户协议"]];
+                  return;
+                } else {
+                  [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+                }
+              } else if ([PNSCodeLoginControllerClickCheckBoxBtn isEqualToString:code]) { // 点击同意协议
+                self->_isChecked = [[resultDic objectForKey:@"isChecked"] boolValue];
+              } else if ([PNSCodeLoginControllerClickCancel isEqualToString:code]) { // 取消
+                [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+              } else if ([PNSCodeCarrierChanged isEqualToString:code]) { // 切换运营商
+                [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+              }
+              [weakSelf showResult:resultDic];
+            }];
 }
 
 #pragma mark -  toast
