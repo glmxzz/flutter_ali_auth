@@ -146,7 +146,7 @@ bool bool_false = false;
   }
 }
 
-- (TXCustomModel *)initModel() {
+- (TXCustomModel *)buildModel{
     TXCustomModel *model = [[TXCustomModel alloc] init];
     model.navColor = UIColor.orangeColor;
     model.navTitle = [[NSAttributedString alloc] initWithString:@"一键登录（全屏）" attributes:@{NSForegroundColorAttributeName : UIColor.whiteColor,NSFontAttributeName : [UIFont systemFontOfSize:20.0]}];
@@ -165,7 +165,7 @@ bool bool_false = false;
   else {
     NSString *secret = [dic stringValueForKey: @"iosSk" defaultValue: @""];
     /** 不管是否延时登录都需要，先初始化model */
-    _model = [self initModel];
+    _model = [self buildModel];
     //1. 初始化sdk，设置secret
     [[TXCommonHandler sharedInstance] setAuthSDKInfo:secret complete:^(NSDictionary * _Nonnull resultDic) {
 
@@ -336,52 +336,7 @@ bool bool_false = false;
             //3. 调用获取登录Token接口，可以立马弹起授权页
             // 关闭loading
             [MBProgressHUD hideHUDForView:_vc.view animated:YES];
-            [[TXCommonHandler sharedInstance] getLoginTokenWithTimeout:timeout controller:_vc model:model complete:^(NSDictionary * _Nonnull resultDic) {
-              NSString *code = [resultDic objectForKey:@"resultCode"];
-//              UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickAllScreen:)];
-//
-//              UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _vc.view.bounds.size.width, _vc.view.bounds.size.height)];
-              //将手势添加到需要相应的view中去
-              [[weakSelf findCurrentViewController].view hitTest:CGPointMake(_vc.view.bounds.size.width, _vc.view.bounds.size.height) withEvent:nil];
-//              [[weakSelf findCurrentViewController].view addSubview:headerView];
-              
-              bool isHiddenLoading = [self->_callData.arguments boolValueForKey: @"isHiddenLoading" defaultValue: YES];
-              // 当未勾选隐私协议时，弹出 Toast 提示
-              if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] &&
-                    !self->_isChecked) {
-                    NSDictionary *dic = self->_callData.arguments;
-                    [self showToast:[dic stringValueForKey:@"toastText" defaultValue:@"请先阅读用户协议"]];
-                    // 当存在isHiddenLoading时需要执行loading
-              } else if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] && !isHiddenLoading) {
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD showHUDAddedTo:[weakSelf findCurrentViewController].view animated:YES];
-                });
-              } else if ([PNSCodeSuccess isEqualToString:code]) {
-                bool autoQuitPage = [self->_callData.arguments boolValueForKey: @"autoQuitPage" defaultValue: YES];
-                // 登录成功后是否自动关闭页面
-                if (autoQuitPage) {
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                    [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
-                  });
-                }
-              } else if ([PNSCodeLoginControllerClickChangeBtn isEqualToString:code]) {
-                // 通过switchCheck 参数动态控制 是否需要切换其他方式时需要勾选
-                NSDictionary *dic = self -> _callData.arguments;
-                if (!self->_isChecked && !self-> _isHideToast && [dic boolValueForKey: @"switchCheck" defaultValue: YES]) {
-                  [self showToast: [dic stringValueForKey: @"toastText" defaultValue: @"请先阅读用户协议"]];
-                  return;
-                } else {
-                  [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
-                }
-              } else if ([PNSCodeLoginControllerClickCheckBoxBtn isEqualToString:code]) { // 点击同意协议
-                self->_isChecked = [[resultDic objectForKey:@"isChecked"] boolValue];
-              } else if ([PNSCodeLoginControllerClickCancel isEqualToString:code]) { // 取消
-                [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
-              } else if ([PNSCodeCarrierChanged isEqualToString:code]) { // 切换运营商
-                [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
-              }
-              [weakSelf showResult:resultDic];
-            }];
+
         }];
     }];
 }
