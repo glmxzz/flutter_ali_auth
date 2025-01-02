@@ -44,7 +44,7 @@ class MyOneKeyLoginApi(
         }
 
         override fun onViewCreated(view: View) {
-            view.findViewById<View>(R.id.llLoginWechat)
+            view.findViewById<View>(R.id.wxLogin)
                 .setOnClickListener {
                     if (oneKeyLoginManager?.queryCheckBoxIsChecked() == true) {
                         callback.onThirdLogin(0) {}
