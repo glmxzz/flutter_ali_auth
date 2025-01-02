@@ -19,14 +19,14 @@
 
         <ImageView
             android:id="@+id/wxLogin"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:src="@drawable/icon_login_wechat" />
 
         <ImageView
             android:id="@+id/loginPhone"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginLeft="40dp"
             android:src="@drawable/icon_login_phone" />
 

@@ -179,22 +179,22 @@ class OneKeyLoginManager(private val context: Context) {
                 .setLogoHidden(true)
 
                 .setSloganText("本机号登录")
-                .setSloganTextSizeDp(24)
+                .setSloganTextSizeDp(22)
                 .setSloganHidden(false)
                 .setSloganTextColor(Color.WHITE)
 
                 //手机号码
                 .setNumberColor(Color.WHITE)
-                .setNumberSizeDp(24)
+                .setNumberSizeDp(22)
                 .setNumFieldOffsetY(254)
 
                 //一键登录按钮
-                .setLogBtnOffsetY(301)
+                .setLogBtnOffsetY(321)
                 .setLogBtnText("一键登录")
                 .setLogBtnTextColor(context.resources.getColor(R.color.color_363C54))
                 .setLogBtnTextSizeDp(17)
-                .setLogBtnBackgroundPath("background_login_onekey")
-                .setLogBtnHeight(48)
+                .setLogBtnBackgroundDrawable(context.resources.getDrawable(R.drawable.background_login_onekey))
+                .setLogBtnHeight(56)
                 .setLogBtnMarginLeftAndRight(54)
                 .setLogBtnToastHidden(true)
 
@@ -207,8 +207,8 @@ class OneKeyLoginManager(private val context: Context) {
                 .setAppPrivacyColor(context.resources.getColor(R.color.color_F4F5F7), Color.WHITE)
                 .setCheckedImgPath("btn_checked")
                 .setUncheckedImgPath("btn_unchecked")
-                .setCheckBoxWidth(22)
-                .setCheckBoxHeight(22)
+                .setCheckBoxWidth(16)
+                .setCheckBoxHeight(16)
                 .setPrivacyOffsetY_B(38)
                 .setVendorPrivacyPrefix("《")
                 .setVendorPrivacySuffix("》")
