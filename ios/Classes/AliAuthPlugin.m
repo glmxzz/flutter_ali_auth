@@ -146,6 +146,112 @@ bool bool_false = false;
   }
 }
 
+
+#pragma mark - 初始化相关布局
+- (TXCustomModel *)initModel {
+    TXCustomModel *model = [[TXCustomModel alloc] init];
+
+    model.navColor = UIColor.orangeColor;
+//     model.navTitle = [[NSAttributedString alloc] initWithString:@"一键登录（全屏）" attributes:@{NSForegroundColorAttributeName : UIColor.whiteColor,NSFontAttributeName : [UIFont systemFontOfSize:20.0]}];
+model.navIsHidden = YES;
+// model.navBackImage = [UIImage imageNamed:@"icon_nav_back_light"];
+model.hideNavBackItem = YES;
+// UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+// [rightBtn setTitle:@"更多" forState:UIControlStateNormal];
+// model.navMoreView = rightBtn;
+
+model.privacyNavColor = UIColor.orangeColor;
+// model.privacyNavBackImage = [UIImage imageNamed:@"icon_nav_back_light"];
+model.privacyNavTitleFont = [UIFont systemFontOfSize:20.0];
+model.privacyNavTitleColor = UIColor.whiteColor;
+
+// model.logoImage = [UIImage imageNamed:@"taobao"];
+//model.logoIsHidden = NO;
+//model.sloganIsHidden = NO;
+model.sloganText = [[NSAttributedString alloc] initWithString:@"一键登录slogan文案" attributes:@{NSForegroundColorAttributeName : UIColor.orangeColor,NSFontAttributeName : [UIFont systemFontOfSize:16.0]}];
+model.numberColor = UIColor.orangeColor;
+model.numberFont = [UIFont systemFontOfSize:30.0];
+model.loginBtnText = [[NSAttributedString alloc] initWithString:@"一键登录" attributes:@{NSForegroundColorAttributeName : UIColor.whiteColor,NSFontAttributeName : [UIFont systemFontOfSize:20.0]}];
+//model.autoHideLoginLoading = NO;
+//model.privacyOne = @[@"《隐私1》",@"https://www.taobao.com/"];
+//model.privacyTwo = @[@"《隐私2》",@"https://www.taobao.com/"];
+model.privacyColors = @[UIColor.lightGrayColor, UIColor.orangeColor];
+model.privacyAlignment = NSTextAlignmentCenter;
+model.privacyFont = [UIFont fontWithName:@"PingFangSC-Regular" size:13.0];
+model.privacyOperatorPreText = @"《";
+model.privacyOperatorSufText = @"》";
+//model.checkBoxIsHidden = NO;
+model.checkBoxWH = 17.0;
+model.changeBtnTitle = [[NSAttributedString alloc] initWithString:@"切换到其他方式" attributes:@{NSForegroundColorAttributeName : UIColor.orangeColor,NSFontAttributeName : [UIFont systemFontOfSize:18.0]}];
+//model.changeBtnIsHidden = NO;
+//model.prefersStatusBarHidden = NO;
+model.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+//model.presentDirection = PNSPresentationDirectionBottom;
+
+//授权页默认控件布局调整
+//model.navBackButtonFrameBlock =
+//model.navTitleFrameBlock =
+model.navMoreViewFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+    CGFloat width = superViewSize.height;
+    CGFloat height = width;
+    return CGRectMake(superViewSize.width - 15 - width, 0, width, height);
+};
+model.loginBtnFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+    if ([self isHorizontal:screenSize]) {
+        frame.origin.y = 20;
+        return frame;
+    }
+    return frame;
+};
+model.sloganFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+    if ([self isHorizontal:screenSize]) {
+        return CGRectZero; //横屏时模拟隐藏该控件
+    } else {
+        return CGRectMake(0, 140, superViewSize.width, frame.size.height);
+    }
+};
+model.numberFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+    if ([self isHorizontal:screenSize]) {
+        frame.origin.y = 140;
+    }
+    return frame;
+};
+model.loginBtnFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+    if ([self isHorizontal:screenSize]) {
+        frame.origin.y = 185;
+    }
+    return frame;
+};
+model.changeBtnFrameBlock = ^CGRect(CGSize screenSize, CGSize superViewSize, CGRect frame) {
+    if ([self isHorizontal:screenSize]) {
+        return CGRectZero; //横屏时模拟隐藏该控件
+    } else {
+        return CGRectMake(10, frame.origin.y, superViewSize.width - 20, 30);
+    }
+};
+//model.privacyFrameBlock =
+
+//添加自定义控件并对自定义控件进行布局
+__block UIButton *customBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+[customBtn setTitle:@"这是一个自定义控件" forState:UIControlStateNormal];
+[customBtn setBackgroundColor:UIColor.redColor];
+customBtn.frame = CGRectMake(0, 0, 230, 40);
+model.customViewBlock = ^(UIView * _Nonnull superCustomView) {
+    [superCustomView addSubview:customBtn];
+};
+model.customViewLayoutBlock = ^(CGSize screenSize, CGRect contentViewFrame, CGRect navFrame, CGRect titleBarFrame, CGRect logoFrame, CGRect sloganFrame, CGRect numberFrame, CGRect loginFrame, CGRect changeBtnFrame, CGRect privacyFrame) {
+    CGRect frame = customBtn.frame;
+    frame.origin.x = (contentViewFrame.size.width - frame.size.width) * 0.5;
+    frame.origin.y = CGRectGetMinY(privacyFrame) - frame.size.height - 20;
+    frame.size.width = contentViewFrame.size.width - frame.origin.x * 2;
+    customBtn.frame = frame;
+};
+
+// 仅支持竖屏
+model.supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
+ return model;
+}
+
 #pragma mark - 初始化SDK以及相关布局
 - (void)initSdk {
   NSDictionary *dic = _callData.arguments;
@@ -156,30 +262,33 @@ bool bool_false = false;
   }
   else {
     NSString *secret = [dic stringValueForKey: @"iosSk" defaultValue: @""];
-    /** 不管是否延时登录都需要，先初始化model */
-    _model = [PNSBuildModelUtils buildModelWithStyle: dic target:self selector:@selector(btnClick:)];
+//     /** 不管是否延时登录都需要，先初始化model */
+//     _model = [PNSBuildModelUtils buildModelWithStyle: dic target:self selector:@selector(btnClick:)];
     //1. 初始化sdk，设置secret
     [[TXCommonHandler sharedInstance] setAuthSDKInfo:secret complete:^(NSDictionary * _Nonnull resultDic) {
+        _model = [self initModel];
       //2. 调用check接口检查及准备接口调用环境
-      [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable checkDic) {
-        if ([PNSCodeSuccess isEqualToString:[checkDic objectForKey:@"resultCode"]] == YES) {
-          //3. 调用取号接口，加速授权页的弹起
-          [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout: 5.0 complete:^(NSDictionary * _Nonnull resultDic) {
-            //4. 预取号成功后判断是否延时登录，否则立即登录
-            if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == YES) {
-              if (![dic boolValueForKey: @"isDelay" defaultValue: NO]) {
-                [self loginWithModel: self->_model complete:^{}];
-              }
-            }else{
-                [self showResult: resultDic];
-            }
-          }];
-        } else {
-          NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:checkDic];
-          [result setValue:@(bool_false) forKey: @"token"];
-          [self showResult: result];
-        }
-      }];
+//       [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable checkDic) {
+//         if ([PNSCodeSuccess isEqualToString:[checkDic objectForKey:@"resultCode"]] == YES) {
+//           //3. 调用取号接口，加速授权页的弹起
+//           [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout: 5.0 complete:^(NSDictionary * _Nonnull resultDic) {
+//             //4. 预取号成功后判断是否延时登录，否则立即登录
+//             if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == YES) {
+//
+//             [self initModel];
+// //               if (![dic boolValueForKey: @"isDelay" defaultValue: NO]) {
+// //                 [self loginWithModel: self->_model complete:^{}];
+// //               }
+//             }else{
+//                 [self showResult: resultDic];
+//             }
+//           }];
+//         } else {
+//           NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:checkDic];
+//           [result setValue:@(bool_false) forKey: @"token"];
+//           [self showResult: result];
+//         }
+//       }];
     }];
   }
 }
@@ -309,72 +418,75 @@ bool bool_false = false;
   
   // 每次登录时都设置没有登录状态
   self->_isChecked = false;
-  
-  //1. 调用check接口检查及准备接口调用环境
-  [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable resultDic) {
-        if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == NO) {
-          [weakSelf showResult:resultDic];
-          return;
-        }
-        
-        //2. 调用取号接口，加速授权页的弹起
-        [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout:timeout complete:^(NSDictionary * _Nonnull resultDic) {
-          if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == NO) {
-            [weakSelf showResult:resultDic];
-            return;
-          }
-          
-            //3. 调用获取登录Token接口，可以立马弹起授权页
-            // 关闭loading
-            [MBProgressHUD hideHUDForView:_vc.view animated:YES];
-            [[TXCommonHandler sharedInstance] getLoginTokenWithTimeout:timeout controller:_vc model:model complete:^(NSDictionary * _Nonnull resultDic) {
-              NSString *code = [resultDic objectForKey:@"resultCode"];
-//              UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickAllScreen:)];
-//
-//              UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _vc.view.bounds.size.width, _vc.view.bounds.size.height)];
-              //将手势添加到需要相应的view中去
-              [[weakSelf findCurrentViewController].view hitTest:CGPointMake(_vc.view.bounds.size.width, _vc.view.bounds.size.height) withEvent:nil];
-//              [[weakSelf findCurrentViewController].view addSubview:headerView];
-              
-              bool isHiddenLoading = [self->_callData.arguments boolValueForKey: @"isHiddenLoading" defaultValue: YES];
-              // 当未勾选隐私协议时，弹出 Toast 提示
-              if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] &&
-                    !self->_isChecked) {
-                    NSDictionary *dic = self->_callData.arguments;
-                    [self showToast:[dic stringValueForKey:@"toastText" defaultValue:@"请先阅读用户协议"]];
-                    // 当存在isHiddenLoading时需要执行loading
-              } else if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] && !isHiddenLoading) {
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD showHUDAddedTo:[weakSelf findCurrentViewController].view animated:YES];
-                });
-              } else if ([PNSCodeSuccess isEqualToString:code]) {
-                bool autoQuitPage = [self->_callData.arguments boolValueForKey: @"autoQuitPage" defaultValue: YES];
-                // 登录成功后是否自动关闭页面
-                if (autoQuitPage) {
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                    [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+
+
+  [[TXCommonHandler sharedInstance] getLoginTokenWithTimeout:timeout controller:_vc model:model complete:^(NSDictionary * _Nonnull resultDic) {
+                NSString *code = [resultDic objectForKey:@"resultCode"];
+  //              UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickAllScreen:)];
+  //
+  //              UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _vc.view.bounds.size.width, _vc.view.bounds.size.height)];
+                //将手势添加到需要相应的view中去
+//                 [[weakSelf findCurrentViewController].view hitTest:CGPointMake(_vc.view.bounds.size.width, _vc.view.bounds.size.height) withEvent:nil];
+  //              [[weakSelf findCurrentViewController].view addSubview:headerView];
+
+//                 bool isHiddenLoading = [self->_callData.arguments boolValueForKey: @"isHiddenLoading" defaultValue: YES];
+                // 当未勾选隐私协议时，弹出 Toast 提示
+                if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] &&
+                      !self->_isChecked) {
+                      NSDictionary *dic = self->_callData.arguments;
+                      [self showToast:[dic stringValueForKey:@"toastText" defaultValue:@"请先阅读用户协议"]];
+                      // 当存在isHiddenLoading时需要执行loading
+                } else if ([PNSCodeLoginControllerClickLoginBtn isEqualToString:code] && !isHiddenLoading) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                      [MBProgressHUD showHUDAddedTo:[weakSelf findCurrentViewController].view animated:YES];
                   });
-                }
-              } else if ([PNSCodeLoginControllerClickChangeBtn isEqualToString:code]) {
-                // 通过switchCheck 参数动态控制 是否需要切换其他方式时需要勾选
-                NSDictionary *dic = self -> _callData.arguments;
-                if (!self->_isChecked && !self-> _isHideToast && [dic boolValueForKey: @"switchCheck" defaultValue: YES]) {
-                  [self showToast: [dic stringValueForKey: @"toastText" defaultValue: @"请先阅读用户协议"]];
-                  return;
-                } else {
+                } else if ([PNSCodeSuccess isEqualToString:code]) {
+                  bool autoQuitPage = [self->_callData.arguments boolValueForKey: @"autoQuitPage" defaultValue: YES];
+                  // 登录成功后是否自动关闭页面
+                  if (autoQuitPage) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                      [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+                    });
+                  }
+                } else if ([PNSCodeLoginControllerClickChangeBtn isEqualToString:code]) {
+                  // 通过switchCheck 参数动态控制 是否需要切换其他方式时需要勾选
+                  NSDictionary *dic = self -> _callData.arguments;
+                  if (!self->_isChecked && !self-> _isHideToast && [dic boolValueForKey: @"switchCheck" defaultValue: YES]) {
+                    [self showToast: [dic stringValueForKey: @"toastText" defaultValue: @"请先阅读用户协议"]];
+                    return;
+                  } else {
+                    [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+                  }
+                } else if ([PNSCodeLoginControllerClickCheckBoxBtn isEqualToString:code]) { // 点击同意协议
+                  self->_isChecked = [[resultDic objectForKey:@"isChecked"] boolValue];
+                } else if ([PNSCodeLoginControllerClickCancel isEqualToString:code]) { // 取消
+                  [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
+                } else if ([PNSCodeCarrierChanged isEqualToString:code]) { // 切换运营商
                   [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
                 }
-              } else if ([PNSCodeLoginControllerClickCheckBoxBtn isEqualToString:code]) { // 点击同意协议
-                self->_isChecked = [[resultDic objectForKey:@"isChecked"] boolValue];
-              } else if ([PNSCodeLoginControllerClickCancel isEqualToString:code]) { // 取消
-                [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
-              } else if ([PNSCodeCarrierChanged isEqualToString:code]) { // 切换运营商
-                [[TXCommonHandler sharedInstance] cancelLoginVCAnimated:YES complete:nil];
-              }
-              [weakSelf showResult:resultDic];
-            }];
-        }];
-    }];
+                [weakSelf showResult:resultDic];
+              }];
+
+  //1. 调用check接口检查及准备接口调用环境
+//   [[TXCommonHandler sharedInstance] checkEnvAvailableWithAuthType:PNSAuthTypeLoginToken complete:^(NSDictionary * _Nullable resultDic) {
+//         if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == NO) {
+//           [weakSelf showResult:resultDic];
+//           return;
+//         }
+//
+//         //2. 调用取号接口，加速授权页的弹起
+//         [[TXCommonHandler sharedInstance] accelerateLoginPageWithTimeout:timeout complete:^(NSDictionary * _Nonnull resultDic) {
+//           if ([PNSCodeSuccess isEqualToString:[resultDic objectForKey:@"resultCode"]] == NO) {
+//             [weakSelf showResult:resultDic];
+//             return;
+//           }
+//
+//             //3. 调用获取登录Token接口，可以立马弹起授权页
+//             // 关闭loading
+//             [MBProgressHUD hideHUDForView:_vc.view animated:YES];
+//
+//         }];
+//     }];
 }
 
 #pragma mark -  toast
